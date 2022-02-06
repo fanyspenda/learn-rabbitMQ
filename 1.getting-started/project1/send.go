@@ -1,10 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 
 	"github.com/streadway/amqp"
 )
+
+type Biodata struct {
+	Name string
+	Age  int
+}
 
 func failOnError(err error, msg string) {
 	if err != nil {
@@ -24,14 +30,26 @@ func main() {
 	defer ch.Close()
 
 	log.Println("declaring Queue")
-	q, err := ch.QueueDeclare("hello", false, false, false, false, nil)
+	q, err := ch.QueueDeclare(
+		"hello",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
 	failOnError(err, "failed to declare Queue")
 
 	log.Println("Publishing a  message")
-	body := "Hello, Fany Ervansyah"
+	body := Biodata{
+		Name: "Fany Ervansyah",
+		Age:  24,
+	}
+	jsonBody, err := json.Marshal(body)
+	failOnError(err, "Failed marshaling body")
 	err = ch.Publish("", q.Name, false, false, amqp.Publishing{
 		ContentType: "text/plain",
-		Body:        []byte(body),
+		Body:        []byte(jsonBody),
 	})
 	failOnError(err, "failed to publish message")
 
