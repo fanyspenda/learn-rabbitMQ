@@ -51,7 +51,7 @@ func main() {
 	failOnError(err, "failed to declare Queue")
 
 	// membuat receiver tidak menerima message lebih dari 1
-	// (sebelum receiver mengirimkan 1 acknowledge, jangan kirim pesan
+	// (maksudnya, sebelum receiver mengirimkan 1 acknowledge, jangan kirim pesan
 	// ke receiver ini.)
 	err = ch.Qos(
 		1,     // prefetch count
